@@ -1,0 +1,18 @@
+{
+    "name": "vpa/ant",
+    "description": "Ant algoritm",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "VPA\\": "src/VPA"
+        }
+    },
+    "authors": [
+        {
+            "name": "Andrey Pakhomov",
+            "email": "andrey.pahomov@gmail.com"
+        }
+    ],
+    "require": {}
+}
