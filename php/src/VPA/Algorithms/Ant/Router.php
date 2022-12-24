@@ -13,15 +13,15 @@ class Router
 
     public function __construct(private array $points, protected float $defaultPheromone = 0.5, protected float $closeness = 10)
     {
-        foreach ($this->points as $point) {
-            $keyFrom = $this->getKey($point);
+        foreach ($this->points as $startPoint) {
+            $keyFrom = $this->getKey($startPoint);
             $this->router[$keyFrom] = [];
             foreach ($this->points as $endPoint) {
-                if ($endPoint !== $point) {
+                if ($endPoint !== $startPoint) {
                     $keyTo = $this->getKey($endPoint);
-                    $distance = $this->getDistance($point, $endPoint);
+                    $distance = $this->getDistance($startPoint, $endPoint);
                     $this->router[$keyFrom][$keyTo] = new Route(
-                        start: $point,
+                        start: $startPoint,
                         end: $endPoint,
                         distance: $distance,
                         pheromone: $this->defaultPheromone,

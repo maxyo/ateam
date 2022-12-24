@@ -14,7 +14,7 @@ $points = [];
 $houses = $data['children'];
 
 foreach ($houses as $house) {
-    $tanAlpha = ceil(($house['y'] / $house['x']) * 10000);
+    $tanAlpha = ceil(($house['y'] / $house['x']) * 100000);
     $points[$tanAlpha] = $house;
 }
 ksort($points);
@@ -25,6 +25,7 @@ $idx = 0;
 foreach ($sizes as $cluster_id => $size) {
     for ($i=0;$i<$size;$i++) {
         $clusters[$cluster_id][] = current($points);
+        next($points);
         $idx ++;
     }
 }
