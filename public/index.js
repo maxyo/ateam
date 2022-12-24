@@ -13,9 +13,12 @@ var stage = new Konva.Stage({
 var layer = new Konva.Layer();
 stage.add(layer);
 
+//рисует шары
 function generateNode(item) {
     return new Konva.Circle(item);
 }
+
+// склад
 const base = {
     x: 0,
     y: 0,
@@ -24,6 +27,23 @@ const base = {
     stroke: 'black'
 };
 layer.add(generateNode(base));
+
+//дети
+data.children.map((item) => {
+    item.radius = 1;
+    item.fill = 'red';
+    item.stroke = 'black';
+    layer.add(generateNode(item));
+});
+
+//бураны
+data.snowAreas.map((item) => {
+    item.radius = item.r;
+    item.stroke = 'black';
+    layer.add(generateNode(item));
+});
+
+
 let tails = [];
 // for (let x = 0; x <= WIDTH; x+1000) {
 //     tails.push(Object.values(data.children).filter((acc) => {
@@ -52,24 +72,12 @@ let tails = [];
 // });
 
 let snow = [];
-data.snowAreas.map((item) => {
-
+data.children.map((child) => {
+    data.snowAreas.map((item) => {
+        // console.log(Math.sqrt(child.x ** 2 + child.y ** 2)
+    });
 });
-console.log(snow)
+// console.log(snow)
 
 // console.log('max', maxX, maxY, maxW, count);
-
-data.children.map((item) => {
-    item.radius = 1;
-    item.fill = 'red';
-    item.stroke = 'black';
-    layer.add(generateNode(item));
-});
-
-data.snowAreas.map((item) => {
-    item.radius = item.r;
-    item.fill = 'blue';
-    item.stroke = 'black';
-    layer.add(generateNode(item));
-});
 
