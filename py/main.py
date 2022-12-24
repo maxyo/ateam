@@ -26,6 +26,8 @@ def main():
         'bags': list(map(lambda i: len(i), bags))
     }, map_data)
 
+    result['bags'] = list(map(lambda i: {'total': len(i), 'items': i}, bags))
+
     io = StringIO()
     json.dump(result, io)
 
