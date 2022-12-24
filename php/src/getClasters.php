@@ -2,7 +2,7 @@
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
-$json = file_get_contents("storage_1671900573.json");
+$json = file_get_contents("storage_1671901016.json");
 $data = json_decode($json, true);
 
 $sizes = array_map(fn($it) => count($it), $data);
@@ -14,7 +14,7 @@ $points = [];
 $houses = $data['children'];
 
 foreach ($houses as $house) {
-    $tanAlpha = ceil(($house['y'] / $house['x']) * 100000);
+    $tanAlpha = ceil(($house['y'] / $house['x']) * 10000000).rand(0,9);
     $points[$tanAlpha] = $house;
 }
 ksort($points);
@@ -22,13 +22,14 @@ ksort($points);
 $clusters = [];
 
 $idx = 0;
+$value = reset($points);
 foreach ($sizes as $cluster_id => $size) {
-    for ($i=0;$i<$size;$i++) {
-        $clusters[$cluster_id][] = current($points);
-        next($points);
-        $idx ++;
+    for ($i = 0; $i < $size; $i++) {
+        $clusters[$cluster_id][] = $value;
+        $value = next($points);
+        $idx++;
     }
 }
-file_put_contents("clusters_".time().".json", json_encode($clusters));
+file_put_contents("clusters_" . time() . ".json", json_encode($clusters));
 
 var_dump($clusters);

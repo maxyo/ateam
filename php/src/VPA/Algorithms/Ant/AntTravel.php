@@ -19,8 +19,8 @@ class AntTravel
     public function run(): float
     {
         $this->points = [];
-        $startPoint = $this->router->getRandomPoint();
-        //$startPoint = new Point(0, 0);
+        //$startPoint = $this->router->getRandomPoint();
+        $startPoint = new Point(0, 0);
         $this->points[] = $startPoint;
 
         while ($nextPoint = $this->getProbabilityRoute($startPoint)) {

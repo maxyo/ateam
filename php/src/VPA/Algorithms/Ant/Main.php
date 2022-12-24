@@ -51,14 +51,15 @@ class Main
             //$this->router->showRouteInfo();
         }
         ksort($this->top10);
-        $top10 = array_slice($this->top10, 0, 5, true);
+        $top10 = array_slice($this->top10, 0, 1, true);
         foreach ($top10 as $d => $travel) {
             $this->showTravelInfo($travel, $d);
+            return [$d, $travel];
         }
         //$this->router->showRouteInfo();
     }
 
-    private function showTravelInfo(array $travel, float $distance)
+    public function showTravelInfo(array $travel, float $distance)
     {
         $data = [];
         $prev = $travel['points'][0];
