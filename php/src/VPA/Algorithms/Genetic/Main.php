@@ -19,19 +19,24 @@ class Main
         }
     }
 
-    public function runBatch()
+    public function runBatch(): array
     {
         $population = [];
         $half = ceil(self::NUMBER_OF_BOTS / 2);
         foreach ($this->bots as $idx => $bot) {
-            [$error, $abs, $len] = $this->getFitness($idx, $bot);
+            $error = $this->getFitness($idx, $bot);
+//            while($error===1000) {
+//                $bot = $this->mutation($bot);
+//                $this->bots[$idx] = $bot;
+//                $error = $this->getFitness($idx, $bot);
+//            }
             $population[$idx] = $error;
         }
         asort($population);
-        $i=0;
+        $i = 0;
         $best = $newBots = [];
         foreach ($population as $idx => $e) {
-            if ($i>=$half) break;
+            if ($i >= $half) break;
             $best[$idx] = $e;
             $i++;
         }
@@ -41,12 +46,24 @@ class Main
             $newBots[] = $this->bots[$idx];
         }
         for ($i = 2; $i < $half; $i++) {
-            $newBots[] = $this->crossing($this->bots[0], $this->bots[$i]);
-            $newBots[] = $this->crossing($this->bots[1], $this->bots[$i]);
+            $bot = $this->crossing($this->bots[0], $this->bots[$i]);
+            $newBots[] = $this->mutation($bot);
+            $bot =  $this->crossing($this->bots[1], $this->bots[$i]);
+            $newBots[] = $this->mutation($bot);
         }
-        $newBots = array_splice($newBots,0, self::NUMBER_OF_BOTS);
-        var_dump("NewBots:",count($newBots));
+        $newBots = array_splice($newBots, 0, self::NUMBER_OF_BOTS);
         $this->bots = $newBots;
+        return $this->bots;
+    }
+
+    public function getBestBot()
+    {
+        return reset($this->bots);
+    }
+
+    public function getBestBackpack(): array
+    {
+        return $this->getBackpackFromBot($this->getBestBot());
     }
 
     public function getBotFromData()
@@ -74,14 +91,17 @@ class Main
         $dv = ($volume - self::MAX_VOLUME);
         if ($dw <= 0 && $dv <= 0) {
             $abs = abs($dw + $dv);
-            $error = $abs / ($len * 2);
+            $error = $abs / ($len * 4 + 1);
+            if ($len < 26) {
+                $error += 2;
+            }
         } else {
             $abs = $error = 1000;
         }
         if ($error != 1000) {
-            printf("Bot %2d: Error: %.3f Abs: %d Len: %d\n", $id, $error, $abs, $len);
+            //printf("Bot %2d: Error: %.3f Abs: %d Len: %d\n", $id, $error, $abs, $len);
         }
-        return [$error, $abs, $len];
+        return $error;
     }
 
     private function showBotInfo(array $bot)
@@ -91,6 +111,20 @@ class Main
             "[ %s ]\n",
             implode(",", $nbot)
         );
+    }
+
+    public function mutation($bot)
+    {
+        foreach ($bot as $idx => $gene) {
+            $p = rand(0, 100);
+            if ($p < 20) {
+                $bot[$idx] = 0;
+            }
+//            elseif ($p>40 && $p < 43) {
+//                $bot[$idx] = 1;
+//            }
+        }
+        return $bot;
     }
 
     public function crossing($bot1, $bot2)
@@ -105,5 +139,16 @@ class Main
             }
         }
         return $bot;
+    }
+
+    public function getBackpackFromBot(array $bot): array
+    {
+        $backpack = [];
+        foreach ($bot as $idx => $gene) {
+            if ($gene) {
+                $backpack[] = $idx + 1;
+            }
+        }
+        return $backpack;
     }
 }

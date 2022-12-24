@@ -3,7 +3,7 @@
 require_once(__DIR__ . '/../vendor/autoload.php');
 
 use VPA\Algorithms\Ant\Main;
-use \VPA\Algorithms\Genetic\Main as GeneticMain;
+use VPA\Algorithms\Genetic\Main as GeneticMain;
 use VPA\Algorithms\Ant\Dto\Point;
 use VPA\Algorithms\Ant\Router;
 
@@ -31,10 +31,12 @@ foreach ($data['gifts'] as $item) {
 }
 
 $genetic = new GeneticMain($gifts);
-for ($i=0; $i< 10; $i++) {
+for ($i=0; $i< 50; $i++) {
     echo "Batch $i:\n";
     $genetic->runBatch();
 }
+$backpack = $genetic->getBestBackpack();
+
 
 //$str = json_encode($gifts);
 //file_put_contents("gifts.json", $str);
