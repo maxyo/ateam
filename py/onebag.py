@@ -1,7 +1,7 @@
 from ortools.algorithms import pywrapknapsack_solver
 
 from py.client.api.map_ import get_map
-from py.config import client, VOLUME_CAPACITY, WEIGHT_CAPACITY
+from py.config import client, VOLUME_CAPACITY, WEIGHT_CAPACITY, ENABLE_DEBUG
 from py.utils import get_weight, get_id, get_volume
 
 
@@ -38,7 +38,7 @@ def one_bag(excluded_gifts: list[int] = []):
     packed_volumes = []
     total_weight = 0
     total_volume = 0
-    print('Total value =', computed_value)
+    ENABLE_DEBUG and print('Total value =', computed_value)
     for i in range(len(values)):
         if solver.BestSolutionContains(i):
             packed_items.append(values[i])
@@ -46,12 +46,12 @@ def one_bag(excluded_gifts: list[int] = []):
             packed_volumes.append(weights[1][i])
             total_weight += weights[0][i]
             total_volume += weights[1][i]
-    print('Total items:', len(packed_items))
-    print('Total weight:', total_weight)
-    print('Total volume:', total_volume)
-    print('Packed items:', packed_items)
-    print('Packed volumes:', packed_volumes)
-    print('Packed_weights:', packed_weights)
+    ENABLE_DEBUG and print('Total items:', len(packed_items))
+    ENABLE_DEBUG and print('Total weight:', total_weight)
+    ENABLE_DEBUG and print('Total volume:', total_volume)
+    ENABLE_DEBUG and print('Packed items:', packed_items)
+    ENABLE_DEBUG and print('Packed volumes:', packed_volumes)
+    ENABLE_DEBUG and print('Packed_weights:', packed_weights)
 
     return packed_items
 
