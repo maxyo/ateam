@@ -7,7 +7,8 @@ use VPA\Algorithms\Genetic\Main as GeneticMain;
 use VPA\Algorithms\Ant\Dto\Point;
 use VPA\Algorithms\Ant\Router;
 
-$json = file_get_contents("clusters_1671915487.json");
+//$json = file_get_contents("clusters_1671915487.json");
+$json = file_get_contents("clusters_radius_1671917911.json");
 $data = json_decode($json, true);
 
 $totalDistance = 0;
