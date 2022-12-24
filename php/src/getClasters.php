@@ -29,5 +29,6 @@ foreach ($sizes as $cluster_id => $size) {
         $idx ++;
     }
 }
+file_put_contents("clusters_".time().".json", json_encode($clusters));
 
 var_dump($clusters);
