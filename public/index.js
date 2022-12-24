@@ -10,12 +10,20 @@ var stage = new Konva.Stage({
     draggable: true,
 });
 
-var layer = new Konva.Layer();
+let layer = new Konva.Layer();
 stage.add(layer);
 
 //рисует шары
 function generateNode(item) {
-    return new Konva.Circle(item);
+    layer.add( new Konva.Circle(item));
+    layer.add(new Konva.Text({
+        x: item.x,
+        y: item.y,
+        text: item.childs,
+        fontSize: 230,
+        fontFamily: 'Calibri',
+        fill: 'green'
+    }))
 }
 
 // склад
@@ -26,58 +34,32 @@ const base = {
     fill: 'green',
     stroke: 'black'
 };
-layer.add(generateNode(base));
+generateNode(base);
 
 //дети
 data.children.map((item) => {
     item.radius = 1;
     item.fill = 'red';
     item.stroke = 'black';
-    layer.add(generateNode(item));
+    generateNode(item);
 });
 
 //бураны
 data.snowAreas.map((item) => {
     item.radius = item.r;
     item.stroke = 'black';
-    layer.add(generateNode(item));
+    generateNode(item);
 });
 
-
-let tails = [];
-// for (let x = 0; x <= WIDTH; x+1000) {
-//     tails.push(Object.values(data.children).filter((acc) => {
-//         return (acc.x > x && acc.x < (x + 1000)) && (acc.y > x && acc.y < (x + 1000)) ? acc : null;
-//     }));
-// }
-// let maxX = data.children.reduce((acc, curr) => acc.x > curr.x ? acc : curr);
-// let maxY = data.children.reduce((acc, curr) => acc.y > curr.y ? acc : curr);
-// let weight = 0, volume = 0, count = 0;
-//
-// let maxW = data.gifts.reduce((acc, curr) => {
-//     acc.volume += curr.volume
-//     acc.weight += curr.weight
-//     if (
-//         ((weight + curr.weight) > 200) ||
-//         ((volume + curr.volume) > 100)
-//     ) {
-//         console.log(count, weight, volume)
-//         count++;
-//         volume = 0;
-//         weight = 0;
-//     }
-//     weight += curr.weight
-//     volume += curr.volume
-//     return acc;
-// });
-
-let snow = [];
-data.children.map((child) => {
-    data.snowAreas.map((item) => {
-        // console.log(Math.sqrt(child.x ** 2 + child.y ** 2)
+let snow;
+data.children.forEach((child, indexChild) => {
+    snow = data.snowAreas.map((item, indexSnow) => {
+        if ((item.x - child.x)*(item.x - child.x) + (item.y - child.y)*(item.y - child.y) <= item.r*item.r) {
+            item.childs = item.childs ? item.childs+1 : 1;
+        }
+        return item;
     });
 });
-// console.log(snow)
-
-// console.log('max', maxX, maxY, maxW, count);
+//снежные бури с детьми внутри
+console.log(snow);
 
