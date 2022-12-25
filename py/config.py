@@ -14,6 +14,7 @@ parser.add_argument('--evil', required=False, type=bool, default=False, help='Ev
 parser.add_argument('--token', required=False, type=str, default=None, help='Token')
 parser.add_argument('--send', required=False, type=bool, default=False, help='Send on successful build')
 parser.add_argument('--map', required=False, type=str, default='faf7ef78-41b3-4a36-8423-688a61929c08', help='Map id')
+parser.add_argument('--matrix', required=False, default=None, type=str, help='Prepared matrix, path to json')
 
 parser.add_argument('--blimit', required=False, type=int, default=2,
                     help='Bags combination searching time limit, seconds')
@@ -37,6 +38,7 @@ SEND = args.send
 MAP_ID = args.map
 
 TOKEN = args.token
+PREPARED_MATRIX = args.matrix
 
 MANY_BAGS_FINDING_TIME_LIMIT_MS = args.blimit * 1000
 

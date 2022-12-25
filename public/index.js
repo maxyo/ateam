@@ -1,9 +1,10 @@
 // Create app
 const DATA = readJSON('../../php/src/faf7ef78-41b3-4a36-8423-688a61929c08.json');
-const BAGS = readJSON('../../php/src/storage_1671921073.json');
-const CLUSTERS = readJSON('../../php/src/clusters_1671921073.json');
-const MOVIES = readJSON('../../php/src/moves_1671921073.json');
-
+// const CLUSTERS = readJSON('../../php/src/clusters_1671921073.json');
+const CLUSTERS = [];
+const d = readJSON('../../output.json')
+const MOVIES = d.paths;
+const BAGS = d.bags;
 var width = window.innerWidth;
 var height = window.innerHeight;
 
@@ -42,11 +43,19 @@ const base = {
 generateCircleNode(base);
 
 //дети
-DATA.children.map((item) => {
-    item.radius = 1;
+DATA.children.map((item, i) => {
+    item.radius = 2;
     item.fill = 'red';
     item.stroke = 'black';
     generateCircleNode(item);
+    generateNumber({
+        fill: 'red',
+        stroke: 'black',
+        strokeWidth: 0.5,
+        text: `${i+1}`,
+        x: item.x - 15,
+        y: item.y - 15,
+    });
 });
 
 let snow;
@@ -89,26 +98,38 @@ function generateAreaCircle()
 }
 
 function calculatePaths() {
-    let routes = MOVIES.map((arr)=> {
-        //многомерный в одномерный [[], []] => []
-        return [].concat(...arr);
-    })
+    let routes = MOVIES
     let items = [];
     let route = [];
-    routes.map((k)=> {
-        items.push(k.x);
-        items.push(k.y);
-        if (k.x === 0 && k.y === 0) {
+    let routeNum = 0;
+    routes.map((k, i)=> {
+              items.push(k.x);
+            items.push(k.y);
+          if ((k.x === 0 && k.y === 0) || i === routes.length - 1) {
+            const usedGifts = ((routeNum === 0 || routeNum === BAGS.length -1) ? 1 : 0) + (items.length / 2) - 2;
+            if(BAGS[routeNum].total !== usedGifts) {
+                console.error(`Wrong used gifts num at ${routeNum}, used ${usedGifts}`)
+            }
+
+            routeNum++;
             route.push(items);
             items = [k.x, k.y];
         }
     })
 
-    routes.map((r) => {
+    const children = DATA.children.reduce((result, item) => {
+        result[`${item.x}-${item.y}`] = false;
+        return result;
+    }, {});
+
+
+    let totalMoves = 0;
+    route.map((r) => {
         const color = generateColor();
         let prev = r[0];
         const points = r.reduce((res, it, i) => {
             if (i % 2 === 1) {
+            totalMoves++;
                 res.push({x: prev, y: it});
             } else {
                 prev = it;
@@ -121,6 +142,7 @@ function calculatePaths() {
             if(p.x === 0 && p.y === 0) {
                 return;
             }
+            children[`${p.x}-${p.y}`] = true;
             generateNumber({
                 text: `${number++}`,
                 fill: color,
@@ -141,7 +163,32 @@ function calculatePaths() {
         });
         // add the shape to the layer
         layer.add(poly);
+    });
+
+    let withGifts = 0;
+    let withoutGifts = 0;
+    Object.entries(children).forEach(([coord, res]) => {
+        if(!res) {
+            withoutGifts++;
+            const [x,y]= coord.split('-');
+            generateCircleNode({
+                x: x,
+                y: y,
+                width: 100,
+                height: 100,
+                fill: 'red',
+                stroke: 'red',
+                strokeWidth: 1,
+                opacity: 0.2
+
+            })
+        } else {
+            withGifts++;
+        }
     })
+    console.log('With gifts', withGifts)
+    console.log('Without gifts', withoutGifts)
+    console.log('Total moves', totalMoves)
 
 }
 

@@ -54,6 +54,7 @@ def main():
     if SEND:
         if not TOKEN:
             raise Exception('Token not found')
+        result['bags'].reverse()
         route = Route(MAP_ID, list(map(lambda i: Move(i['x'], i['y']), result['paths'])),
                       list(map(lambda i: i['items'], result['bags'])))
         resp = send_route.sync_detailed(client=client, json_body=route)

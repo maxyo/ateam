@@ -85,8 +85,10 @@ def vrp(data, map: Map):
     # Setting first solution heuristic.
     search_parameters = pywrapcp.DefaultRoutingSearchParameters()
     search_parameters.first_solution_strategy = (
-        routing_enums_pb2.FirstSolutionStrategy.AUTOMATIC)
-    search_parameters.time_limit.seconds = 60 * 30
+        routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
+    search_parameters.time_limit.seconds = 180
+    # search_parameters.local_search_metaheuristic = (
+    #     routing_enums_pb2.LocalSearchMetaheuristic.GREEDY_DESCENT)
 
     # Solve the problem.
     solution = routing.SolveWithParameters(search_parameters)
@@ -109,8 +111,6 @@ def vrp(data, map: Map):
                 index = solution.Value(routing.NextVar(index))
                 route_distance += routing.GetArcCostForVehicle(
                     previous_index, index, vehicle_id)
-                if (vehicle_id == 0) and (index == 0):
-                    continue
                 paths.append(
                     {'x': map.children[node_index - 1].x, 'y': map.children[node_index - 1].y} if node_index != 0 else {
                         'x': 0, 'y': 0})
@@ -118,8 +118,8 @@ def vrp(data, map: Map):
         return {
             'totalDistance': 0,
             'totalTime': total_time,
-            'totalMovements': len(paths),
-            'paths': paths
+            'totalMovements': len(paths[1:]),
+            'paths': paths[1:]
         }
 
     else:
