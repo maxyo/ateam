@@ -6,7 +6,6 @@ from py.config import SPEED, SNOWSTORM_SPEED
 from shapely.geometry import LineString
 from shapely.geometry import Point
 
-
 def get_weight(gift: Gift):
     return gift.weight
 
