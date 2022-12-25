@@ -109,7 +109,9 @@ def vrp(data, map: Map):
                 index = solution.Value(routing.NextVar(index))
                 route_distance += routing.GetArcCostForVehicle(
                     previous_index, index, vehicle_id)
-                paths.append({'x': map.children[node_index - 1].x, 'y': map.children[node_index - 1].y} if node_index != 0 else {'x': 0, 'y': 0})
+                paths.append(
+                    {'x': map.children[node_index - 1].x, 'y': map.children[node_index - 1].y} if node_index != 0 else {
+                        'x': 0, 'y': 0})
             total_distance += route_distance
         return {
             'totalDistance': 0,

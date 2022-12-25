@@ -1,10 +1,11 @@
 from ortools.algorithms import pywrapknapsack_solver
 from ortools.linear_solver import pywraplp
 
+from py.instance import client
 from py.client import Client, AuthenticatedClient
 from py.client.api.map_ import get_map
 from py.client.models import Gift
-from py.config import client, BAGS_COUNT, WEIGHT_CAPACITY, VOLUME_CAPACITY, MANY_BAGS_FINDING_TIME_LIMIT_MS, \
+from py.config import BAGS_COUNT, WEIGHT_CAPACITY, VOLUME_CAPACITY, MANY_BAGS_FINDING_TIME_LIMIT_MS, \
     ENABLE_DEBUG
 from py.utils import get_weight, get_volume, get_id
 

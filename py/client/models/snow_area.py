@@ -2,7 +2,6 @@ from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, 
 
 from typing import List
 
-
 import attr
 
 from ..types import UNSET, Unset
@@ -10,11 +9,8 @@ from ..types import UNSET, Unset
 from ..types import UNSET, Unset
 from typing import Union
 
-
-
-
-
 T = TypeVar("T", bound="SnowArea")
+
 
 @attr.s(auto_attribs=True)
 class SnowArea:
@@ -29,7 +25,6 @@ class SnowArea:
     x: Union[Unset, int] = UNSET
     y: Union[Unset, int] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
-
 
     def to_dict(self) -> Dict[str, Any]:
         r = self.r
@@ -48,8 +43,6 @@ class SnowArea:
             field_dict["y"] = y
 
         return field_dict
-
-
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:

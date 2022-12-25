@@ -12,11 +12,10 @@ from ...models.route import Route
 from ...models.new_route_responce import NewRouteResponce
 
 
-
 def _get_kwargs(
-    *,
-    client: AuthenticatedClient,
-    json_body: Route,
+        *,
+        client: AuthenticatedClient,
+        json_body: Route,
 
 ) -> Dict[str, Any]:
     url = "{}/client/round".format(
@@ -25,20 +24,10 @@ def _get_kwargs(
     headers: Dict[str, str] = client.get_headers()
     cookies: Dict[str, Any] = client.get_cookies()
 
-    
-
-    
-
-    
-
     json_json_body = json_body.to_dict()
 
-
-
-    
-
     return {
-	    "method": "post",
+        "method": "post",
         "url": url,
         "headers": headers,
         "cookies": cookies,
@@ -50,8 +39,6 @@ def _get_kwargs(
 def _parse_response(*, client: Client, response: httpx.Response) -> Optional[NewRouteResponce]:
     if response.status_code == HTTPStatus.OK:
         response_200 = NewRouteResponce.from_dict(response.json())
-
-
 
         return response_200
     if client.raise_on_unexpected_status:
@@ -70,9 +57,9 @@ def _build_response(*, client: Client, response: httpx.Response) -> Response[New
 
 
 def sync_detailed(
-    *,
-    client: AuthenticatedClient,
-    json_body: Route,
+        *,
+        client: AuthenticatedClient,
+        json_body: Route,
 
 ) -> Response[NewRouteResponce]:
     """Отправка маршрута и получение ID созданного раунда
@@ -88,10 +75,9 @@ def sync_detailed(
         Response[NewRouteResponce]
     """
 
-
     kwargs = _get_kwargs(
         client=client,
-json_body=json_body,
+        json_body=json_body,
 
     )
 
@@ -102,10 +88,11 @@ json_body=json_body,
 
     return _build_response(client=client, response=response)
 
+
 def sync(
-    *,
-    client: AuthenticatedClient,
-    json_body: Route,
+        *,
+        client: AuthenticatedClient,
+        json_body: Route,
 
 ) -> Optional[NewRouteResponce]:
     """Отправка маршрута и получение ID созданного раунда
@@ -121,17 +108,17 @@ def sync(
         Response[NewRouteResponce]
     """
 
-
     return sync_detailed(
         client=client,
-json_body=json_body,
+        json_body=json_body,
 
     ).parsed
 
+
 async def asyncio_detailed(
-    *,
-    client: AuthenticatedClient,
-    json_body: Route,
+        *,
+        client: AuthenticatedClient,
+        json_body: Route,
 
 ) -> Response[NewRouteResponce]:
     """Отправка маршрута и получение ID созданного раунда
@@ -147,10 +134,9 @@ async def asyncio_detailed(
         Response[NewRouteResponce]
     """
 
-
     kwargs = _get_kwargs(
         client=client,
-json_body=json_body,
+        json_body=json_body,
 
     )
 
@@ -161,10 +147,11 @@ json_body=json_body,
 
     return _build_response(client=client, response=response)
 
+
 async def asyncio(
-    *,
-    client: AuthenticatedClient,
-    json_body: Route,
+        *,
+        client: AuthenticatedClient,
+        json_body: Route,
 
 ) -> Optional[NewRouteResponce]:
     """Отправка маршрута и получение ID созданного раунда
@@ -180,10 +167,8 @@ async def asyncio(
         Response[NewRouteResponce]
     """
 
-
     return (await asyncio_detailed(
         client=client,
-json_body=json_body,
+        json_body=json_body,
 
     )).parsed
-

@@ -2,7 +2,6 @@ from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, 
 
 from typing import List
 
-
 import attr
 
 from ..types import UNSET, Unset
@@ -14,12 +13,10 @@ from typing import cast, List
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-  from ..models.move import Move
-
-
-
+    from ..models.move import Move
 
 T = TypeVar("T", bound="Route")
+
 
 @attr.s(auto_attribs=True)
 class Route:
@@ -37,7 +34,6 @@ class Route:
     stack_of_bags: Union[Unset, List[List[List[int]]]] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
-
     def to_dict(self) -> Dict[str, Any]:
         from ..models.move import Move
         map_id = self.map_id
@@ -49,9 +45,6 @@ class Route:
 
                 moves.append(moves_item)
 
-
-
-
         stack_of_bags: Union[Unset, List[List[List[int]]]] = UNSET
         if not isinstance(self.stack_of_bags, Unset):
             stack_of_bags = []
@@ -60,19 +53,9 @@ class Route:
                 for componentsschemas_gift_bag_item_data in stack_of_bags_item_data:
                     componentsschemas_gift_bag_item = componentsschemas_gift_bag_item_data
 
-
-
-
                     stack_of_bags_item.append(componentsschemas_gift_bag_item)
 
-
-
-
                 stack_of_bags.append(stack_of_bags_item)
-
-
-
-
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -87,8 +70,6 @@ class Route:
 
         return field_dict
 
-
-
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         from ..models.move import Move
@@ -100,10 +81,7 @@ class Route:
         for moves_item_data in (_moves or []):
             moves_item = Move.from_dict(moves_item_data)
 
-
-
             moves.append(moves_item)
-
 
         stack_of_bags = []
         _stack_of_bags = d.pop("stackOfBags", UNSET)
@@ -116,7 +94,6 @@ class Route:
                 stack_of_bags_item.append(componentsschemas_gift_bag_item)
 
             stack_of_bags.append(stack_of_bags_item)
-
 
         route = cls(
             map_id=map_id,

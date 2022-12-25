@@ -1,10 +1,9 @@
 from ortools.algorithms import pywrapknapsack_solver
 
+from py.instance import client
 from py.client.api.map_ import get_map
-from py.config import client, VOLUME_CAPACITY, WEIGHT_CAPACITY, ENABLE_DEBUG
+from py.config import VOLUME_CAPACITY, WEIGHT_CAPACITY, ENABLE_DEBUG
 from py.utils import get_weight, get_id, get_volume
-
-
 
 
 def one_bag(excluded_gifts: list[int] = []):
@@ -18,8 +17,6 @@ def one_bag(excluded_gifts: list[int] = []):
             excluded_gifts.index(gift.id)
         except:
             gifts.append(gift)
-
-
 
     # Create the solver.
     solver = pywrapknapsack_solver.KnapsackSolver(
@@ -54,4 +51,3 @@ def one_bag(excluded_gifts: list[int] = []):
     ENABLE_DEBUG and print('Packed_weights:', packed_weights)
 
     return packed_items
-

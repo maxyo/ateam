@@ -2,7 +2,6 @@ from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, 
 
 from typing import List
 
-
 import attr
 
 from ..types import UNSET, Unset
@@ -14,12 +13,10 @@ from typing import Optional
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-  from ..models.round_processing_result import RoundProcessingResult
-
-
-
+    from ..models.round_processing_result import RoundProcessingResult
 
 T = TypeVar("T", bound="RouteStatusResponce")
+
 
 @attr.s(auto_attribs=True)
 class RouteStatusResponce:
@@ -35,7 +32,6 @@ class RouteStatusResponce:
     data: Union[Unset, None, 'RoundProcessingResult'] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
-
     def to_dict(self) -> Dict[str, Any]:
         from ..models.round_processing_result import RoundProcessingResult
         success = self.success
@@ -43,7 +39,6 @@ class RouteStatusResponce:
         data: Union[Unset, None, Dict[str, Any]] = UNSET
         if not isinstance(self.data, Unset):
             data = self.data.to_dict() if self.data else None
-
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -58,8 +53,6 @@ class RouteStatusResponce:
 
         return field_dict
 
-
-
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         from ..models.round_processing_result import RoundProcessingResult
@@ -72,13 +65,10 @@ class RouteStatusResponce:
         data: Union[Unset, None, RoundProcessingResult]
         if _data is None:
             data = None
-        elif isinstance(_data,  Unset):
+        elif isinstance(_data, Unset):
             data = UNSET
         else:
             data = RoundProcessingResult.from_dict(_data)
-
-
-
 
         route_status_responce = cls(
             success=success,

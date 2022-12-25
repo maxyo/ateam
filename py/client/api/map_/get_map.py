@@ -3,6 +3,7 @@ from typing import Any, Optional, Union
 
 import httpx
 
+from py.config import MAP_ID
 from ...client import Client
 from ...types import Response
 from ... import errors
@@ -12,31 +13,20 @@ from typing import cast
 from typing import Dict
 
 
-
 def _get_kwargs(
-    map_id: str = 'faf7ef78-41b3-4a36-8423-688a61929c08',
-    *,
-    client: Client,
+        map_id: str = 'faf7ef78-41b3-4a36-8423-688a61929c08',
+        *,
+        client: Client,
 
 ) -> Dict[str, Any]:
     url = "{}/json/map/{map_id}.json".format(
-        client.base_url,map_id=map_id)
+        client.base_url, map_id=map_id)
 
     headers: Dict[str, str] = client.get_headers()
     cookies: Dict[str, Any] = client.get_cookies()
 
-    
-
-    
-
-    
-
-    
-
-    
-
     return {
-	    "method": "get",
+        "method": "get",
         "url": url,
         "headers": headers,
         "cookies": cookies,
@@ -47,8 +37,6 @@ def _get_kwargs(
 def _parse_response(*, client: Client, response: httpx.Response) -> Optional[Union[Any, Map]]:
     if response.status_code == HTTPStatus.OK:
         response_200 = Map.from_dict(response.json())
-
-
 
         return response_200
     if response.status_code == HTTPStatus.NOT_FOUND:
@@ -70,9 +58,9 @@ def _build_response(*, client: Client, response: httpx.Response) -> Response[Uni
 
 
 def sync_detailed(
-    map_id: str = 'faf7ef78-41b3-4a36-8423-688a61929c08',
-    *,
-    client: Client,
+        map_id: str = MAP_ID,
+        *,
+        client: Client,
 
 ) -> Response[Union[Any, Map]]:
     """Получение данных детей, подарков и снежных зон.
@@ -88,10 +76,9 @@ def sync_detailed(
         Response[Union[Any, Map]]
     """
 
-
     kwargs = _get_kwargs(
         map_id=map_id,
-client=client,
+        client=client,
 
     )
 
@@ -102,10 +89,11 @@ client=client,
 
     return _build_response(client=client, response=response)
 
+
 def sync(
-    map_id: str = 'faf7ef78-41b3-4a36-8423-688a61929c08',
-    *,
-    client: Client,
+        map_id: str = 'faf7ef78-41b3-4a36-8423-688a61929c08',
+        *,
+        client: Client,
 
 ) -> Optional[Union[Any, Map]]:
     """Получение данных детей, подарков и снежных зон.
@@ -121,17 +109,17 @@ def sync(
         Response[Union[Any, Map]]
     """
 
-
     return sync_detailed(
         map_id=map_id,
-client=client,
+        client=client,
 
     ).parsed
 
+
 async def asyncio_detailed(
-    map_id: str = 'faf7ef78-41b3-4a36-8423-688a61929c08',
-    *,
-    client: Client,
+        map_id: str = 'faf7ef78-41b3-4a36-8423-688a61929c08',
+        *,
+        client: Client,
 
 ) -> Response[Union[Any, Map]]:
     """Получение данных детей, подарков и снежных зон.
@@ -147,10 +135,9 @@ async def asyncio_detailed(
         Response[Union[Any, Map]]
     """
 
-
     kwargs = _get_kwargs(
         map_id=map_id,
-client=client,
+        client=client,
 
     )
 
@@ -161,10 +148,11 @@ client=client,
 
     return _build_response(client=client, response=response)
 
+
 async def asyncio(
-    map_id: str = 'faf7ef78-41b3-4a36-8423-688a61929c08',
-    *,
-    client: Client,
+        map_id: str = 'faf7ef78-41b3-4a36-8423-688a61929c08',
+        *,
+        client: Client,
 
 ) -> Optional[Union[Any, Map]]:
     """Получение данных детей, подарков и снежных зон.
@@ -180,10 +168,8 @@ async def asyncio(
         Response[Union[Any, Map]]
     """
 
-
     return (await asyncio_detailed(
         map_id=map_id,
-client=client,
+        client=client,
 
     )).parsed
-

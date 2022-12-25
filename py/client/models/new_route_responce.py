@@ -2,7 +2,6 @@ from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, 
 
 from typing import List
 
-
 import attr
 
 from ..types import UNSET, Unset
@@ -11,11 +10,8 @@ from ..types import UNSET, Unset
 from typing import Optional
 from typing import Union
 
-
-
-
-
 T = TypeVar("T", bound="NewRouteResponce")
+
 
 @attr.s(auto_attribs=True)
 class NewRouteResponce:
@@ -30,7 +26,6 @@ class NewRouteResponce:
     error: Union[Unset, None, str] = UNSET
     round_id: Union[Unset, None, str] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
-
 
     def to_dict(self) -> Dict[str, Any]:
         success = self.success
@@ -49,8 +44,6 @@ class NewRouteResponce:
             field_dict["roundId"] = round_id
 
         return field_dict
-
-
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
