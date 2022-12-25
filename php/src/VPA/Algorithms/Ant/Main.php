@@ -14,8 +14,9 @@ class Main
      *
      * @param Router $router
      * @param Point[] $points
+     * @param int $batches
      */
-    public function __construct(private Router $router, private array $points)
+    public function __construct(private Router $router, private array $points, private int $batches = 400)
     {
         $this->ants = count($points);
         $this->top10 = [];
@@ -46,7 +47,7 @@ class Main
 
     public function run()
     {
-        for ($i=1;$i<400; $i++) {
+        for ($i = 1; $i < $this->batches; $i++) {
             $this->runBatch($i);
             //$this->router->showRouteInfo();
         }
@@ -65,13 +66,13 @@ class Main
         $prev = $travel['points'][0];
         $data[] = sprintf("[%3d, %3d]", $prev->x, $prev->y);
         $p = 0;
-        for ($i=1; $i< count($travel['points']); $i++) {
+        for ($i = 1; $i < count($travel['points']); $i++) {
             $current = $travel['points'][$i];
             $route = $this->router->getRouteStartEnd($prev, $current);
             $p += $route->pheromone;
             $data[] = sprintf("[%3d, %3d]", $current->x, $current->y);
             $prev = $current;
         }
-        echo "{".floor($distance).": $p }: ".implode(" -> ", $data)."\n";
+        echo "{" . floor($distance) . ": $p }: " . implode(" -> ", $data) . "\n";
     }
 }

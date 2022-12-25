@@ -7,7 +7,7 @@ class Main
     const MAX_WEIGHT = 200;
     const MAX_VOLUME = 100;
     const NUMBER_OF_GENES = 1000;
-    const NUMBER_OF_BOTS = 50;
+    const NUMBER_OF_BOTS = 100;
     private array $bots;
 
     public function __construct(private array $data)
@@ -70,7 +70,7 @@ class Main
     {
         $keys = array_keys($this->data);
         shuffle($keys);
-        $keys = array_slice($keys, 0, 30);
+        $keys = array_slice($keys, 0, 40);
         $bot = array_fill(0, self::NUMBER_OF_GENES, 0);
         foreach ($keys as $key) {
             $bot[$key - 1] = 1;
@@ -91,9 +91,9 @@ class Main
         $dv = ($volume - self::MAX_VOLUME);
         if ($dw <= 0 && $dv <= 0) {
             $abs = abs($dw + $dv);
-            $error = $abs / ($len * 4 + 1);
-            if ($len < 26) {
-                $error += 2;
+            $error = $abs / ($len + 1);
+            if ($len < 28) {
+                $error += 20;
             }
         } else {
             $abs = $error = 1000;
