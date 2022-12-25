@@ -5,7 +5,8 @@ $clusters = json_decode($json, true);
 $moves = [];
 foreach ($clusters as $pointsArray) {
     $move = array_map(fn($it) => ['x'=>$it[0], 'y'=>$it[1]], $pointsArray);
-    $moves[] = $move;
+    array_shift($move);
+    $moves= array_merge($moves, $move);
 }
 
 file_put_contents("moves-xy_last.json", json_encode($moves));

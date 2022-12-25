@@ -33,13 +33,13 @@ while (!empty($heap)) {
     }
     $bag_id ++;
     $len_idx = count($backpack).rand(10,99);
-    $storage[$len_idx] = $backpack;
+    $storage[] = $backpack;
     foreach ($backpack as $gift_id) {
         unset($heap[$gift_id]);
     }
     //die();
 }
-ksort($storage);
+//ksort($storage);
 //var_dump($storage); die();
 file_put_contents("storage_".$time.".json", json_encode($storage));
 file_put_contents("storage_last.json", json_encode($storage));
@@ -59,7 +59,7 @@ foreach ($clusters as $pointsArray) {
     array_unshift($pointsArray, ['x' => 0, 'y' => 0]);
     $points = array_map(fn($it): Point => new Point($it['x'], $it['y']), $pointsArray);
     $router = new Router($points);
-    $ant = new Main($router, $points, 50);
+    $ant = new Main($router, $points, 10);
     [$distance, $travel] = $ant->run();
     $move = array_map(fn($it) => [$it->x, $it->y], $travel['points']);
     $moves[] = $move;
