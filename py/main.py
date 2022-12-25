@@ -2,9 +2,11 @@ import json
 import sys
 from io import StringIO
 
+from py.client.api.route import send_route
+from py.client.models import Route, Move
 from py.instance import client
 from py.client.api.map_ import get_map
-from py.config import HARDFILLED_BAGS, BAGS_COUNT, OUTPUT_PATH, IS_EVIL
+from py.config import HARDFILLED_BAGS, BAGS_COUNT, OUTPUT_PATH, IS_EVIL, PREPARED_MATRIX, SEND, TOKEN, MAP_ID
 from py.evil import do_evil
 from py.manybags import many_bags
 from py.onebag import one_bag
@@ -23,11 +25,12 @@ def main():
         bags.append(res)
 
     bags.extend(list(many_bags(BAGS_COUNT - HARDFILLED_BAGS, excluded).values()))
-    matrix = get_time_matrix(map_data)
-    io = StringIO()
-    json.dump(matrix, io)
-    with open('./data.json', "w") as f:
-        f.writelines(io.getvalue())
+
+    if PREPARED_MATRIX:
+        with open(PREPARED_MATRIX, 'r') as f:
+            matrix = json.load(f)
+    else:
+        matrix = get_time_matrix(map_data)
 
     result = vrp({
         'distance_matrix': matrix,
@@ -48,6 +51,17 @@ def main():
         with open(OUTPUT_PATH, "w") as f:
             f.writelines(io.getvalue())
 
+    if SEND:
+        if not TOKEN:
+            raise Exception('Token not found')
+        route = Route(MAP_ID, list(map(lambda i: Move(i['x'], i['y']), result['paths'])),
+                      list(map(lambda i: i['items'], result['bags'])))
+        resp = send_route.sync_detailed(client=client, json_body=route)
+
+        if resp.parsed:
+            print('Successful sent %s' % resp.parsed.round_id if resp.parsed.success else resp.parsed.error)
+        else:
+            print(resp.status_code, resp.content)
 
 if __name__ == '__main__':
     main()

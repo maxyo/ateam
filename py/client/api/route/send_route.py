@@ -18,7 +18,7 @@ def _get_kwargs(
         json_body: Route,
 
 ) -> Dict[str, Any]:
-    url = "{}/client/round".format(
+    url = "{}/api/round".format(
         client.base_url)
 
     headers: Dict[str, str] = client.get_headers()
