@@ -22,7 +22,7 @@ $heap = $gifts;
 $bag_id = 0;
 while (!empty($heap)) {
     $genetic = new GeneticMain($heap);
-    for ($i = 0; $i < 100; $i++) {
+    for ($i = 0; $i < 10; $i++) {
         //echo "Batch $i:\n";
         $genetic->runBatch();
     }
@@ -32,38 +32,24 @@ while (!empty($heap)) {
         continue;
     }
     $bag_id ++;
-    $storage[] = $backpack;
+    $len_idx = count($backpack).rand(10,99);
+    $storage[$len_idx] = $backpack;
     foreach ($backpack as $gift_id) {
         unset($heap[$gift_id]);
     }
     //die();
 }
+ksort($storage);
+//var_dump($storage); die();
 file_put_contents("storage_".$time.".json", json_encode($storage));
+file_put_contents("storage_last.json", json_encode($storage));
 
 $sizes = array_map(fn($it) => count($it), $storage);
 
-$points = [];
+$clusters = getClusters($data, $sizes);
 
-$houses = $data['children'];
-
-foreach ($houses as $house) {
-    $tanAlpha = ceil(($house['y'] / $house['x']) * 10000000).rand(0,9);
-    $points[$tanAlpha] = $house;
-}
-ksort($points);
-
-$clusters = [];
-
-$idx = 0;
-$value = reset($points);
-foreach ($sizes as $cluster_id => $size) {
-    for ($i = 0; $i < $size; $i++) {
-        $clusters[$cluster_id][] = $value;
-        $value = next($points);
-        $idx++;
-    }
-}
 file_put_contents("clusters_" . $time . ".json", json_encode($clusters));
+file_put_contents("clusters_last.json", json_encode($clusters));
 
 $totalDistance = 0;
 
@@ -73,13 +59,15 @@ foreach ($clusters as $pointsArray) {
     array_unshift($pointsArray, ['x' => 0, 'y' => 0]);
     $points = array_map(fn($it): Point => new Point($it['x'], $it['y']), $pointsArray);
     $router = new Router($points);
-    $ant = new Main($router, $points);
+    $ant = new Main($router, $points, 50);
     [$distance, $travel] = $ant->run();
     $move = array_map(fn($it) => [$it->x, $it->y], $travel['points']);
     $moves[] = $move;
     $totalDistance += $distance;
 }
 file_put_contents("moves_" . $time . ".json", json_encode($moves));
+file_put_contents("moves_last.json", json_encode($moves));
+
 printf("====================\n%d\n=========================", $totalDistance);
 
 function getFitness(int $bag_id, array $data, array $backpack)
@@ -100,4 +88,58 @@ function getFitness(int $bag_id, array $data, array $backpack)
     }
     printf("Bag %d: Error: %.3f Abs: %d Len: %d\n", $bag_id, $error, $abs, $len);
     return $error;
+}
+
+
+function getClusters(array $data, array $sizes): array
+{
+    $points = [];
+
+    $houses = $data['children'];
+
+    foreach ($houses as $house) {
+        $tanAlpha = ceil(($house['y'] / $house['x']) * 10000000).rand(0,9);
+        $points[$tanAlpha] = $house;
+    }
+    ksort($points);
+
+    $clusters = [];
+
+    $idx = 0;
+    $value = reset($points);
+    foreach ($sizes as $cluster_id => $size) {
+        for ($i = 0; $i < $size; $i++) {
+            $clusters[$cluster_id][] = $value;
+            $value = next($points);
+            $idx++;
+        }
+    }
+
+    return $clusters;
+}
+
+function getClustersRadius(array $data, array $sizes): array
+{
+    $points = [];
+
+    $houses = $data['children'];
+
+    foreach ($houses as $house) {
+        $radius = ceil(sqrt(pow($house['x'],2) + pow($house['y'],2)) * 100000).rand(0,9);
+        $points[$radius] = $house;
+    }
+    ksort($points);
+
+    $clusters = [];
+
+    $idx = 0;
+    $value = reset($points);
+    foreach ($sizes as $cluster_id => $size) {
+        for ($i = 0; $i < $size; $i++) {
+            $clusters[$cluster_id][] = $value;
+            $value = next($points);
+            $idx++;
+        }
+    }
+    return $clusters;
 }

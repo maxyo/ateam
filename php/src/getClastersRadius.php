@@ -9,6 +9,7 @@ $sizes = array_map(fn($it) => count($it), $data);
 
 $json = file_get_contents("faf7ef78-41b3-4a36-8423-688a61929c08.json");
 $data = json_decode($json, true);
+
 $points = [];
 
 $houses = $data['children'];
