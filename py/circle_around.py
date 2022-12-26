@@ -61,12 +61,13 @@ def dist(p1, p2):
 def get_route(cx,cy,cr, x0, y0, x1, y1):
     i = get_intersect(cx,cy,cr, x0, y0, x1, y1);
     points = [[0, 0]]
-    dist0 = dist([0, 0], i[0])
-    dist1 = dist([0, 0], i[1])
-    if (dist0<dist1):
-        points = get_points_outside(points, 5, 5, 3, i[0][0], i[0][1], i[1][0], i[1][1]);
-    else:
-        points = get_points_outside(points, 5, 5, 3, i[1][0], i[1][1], i[0][0], i[0][1]);
+    if i:
+        dist0 = dist([0, 0], i[0])
+        dist1 = dist([0, 0], i[1])
+        if (dist0<dist1):
+            points = get_points_outside(points, 5, 5, 3, i[0][0], i[0][1], i[1][0], i[1][1]);
+        else:
+            points = get_points_outside(points, 5, 5, 3, i[1][0], i[1][1], i[0][0], i[0][1]);
     points.append([10, 10])
     return points
 
