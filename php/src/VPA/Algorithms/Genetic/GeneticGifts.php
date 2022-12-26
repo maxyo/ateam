@@ -93,12 +93,12 @@ class GeneticGifts
         foreach ($best as $idx => $error) {
             $newBots[] = $this->bots[$idx];
         }
-        for ($i = 1; $i < $half; $i++) {
+        for ($i = 2; $i < $half; $i++) {
             $bot = $this->crossing($this->bots[0], $this->bots[$i]);
             $newBots[] = $bot;
             $bot = $this->crossing($this->bots[1], $this->bots[$i]);
-            $newBots[] = $bot;
-            //$newBots[] = $this->mutation($bot);
+            //$newBots[] = $bot;
+            $newBots[] = $this->mutation($bot);
         }
         $newBots = array_splice($newBots, 0, self::NUMBER_OF_BOTS);
         $this->bots = $newBots;
@@ -205,9 +205,9 @@ class GeneticGifts
     {
         foreach ($bot as $idx => $gene) {
             $p = rand(0, 100);
-            $gen = $this->genes[$idx];
+            $key = array_rand($this->types);
             if ($p < 20) {
-                $bot[$idx] = rand(0, count($gen) - 1);
+                $bot[$idx] = $this->types[$key];
             }
 //            elseif ($p>40 && $p < 43) {
 //                $bot[$idx] = 1;
