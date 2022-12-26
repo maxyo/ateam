@@ -21,8 +21,9 @@ def get_intersect(cx, cy, cr, x0, y0, x1, y1):
     circle = p.buffer(cr).boundary
     line = LineString([(x0, y0), (x1, y1)])
     intersection = circle.intersection(line)
+    print("!!!!", type(intersection));
     points = []
-    if intersection:
+    if intersection and hasattr(intersection, 'geoms'):
         for geom in intersection.geoms:
             points.append(geom.coords[0])
         return points
@@ -31,6 +32,7 @@ def get_intersect(cx, cy, cr, x0, y0, x1, y1):
 
 
 # Находит точку за пределами окружности, которая позволяет обойти окружность по кратчайшему пути
+# количество точек на дуге задается по умолчанию = 20
 def get_points_outside(points, cx, cy, cr, x0, y0, x1, y1, count=20):
     h = dist([x0, y0], [x1, y1])
     print("Dist: ", h, h / 2 / cr)
@@ -69,10 +71,11 @@ def dist(p1, p2):
 # x1, y1 - coordinates of second point
 # return [[x0,y0],[x1,y1],...,[xn,yn]] - array of points, includes start and end points of route
 def get_route(cx, cy, cr, x0, y0, x1, y1):
-    i = get_intersect(cx, cy, cr, x0, y0, x1, y1);
-    print("Intersect: ", dist([cx, cy], i[0]), dist([cx, cy], i[1]))
     points = [[x0, y0]]
+    i = get_intersect(cx, cy, cr, x0, y0, x1, y1);
     if i:
+        print("Intersect: ", dist([cx, cy], i[0]), dist([cx, cy], i[1]))
+
         dist0 = dist([x0, y0], i[0])
         dist1 = dist([x1, y1], i[1])
         if dist0 < dist1:
@@ -83,8 +86,8 @@ def get_route(cx, cy, cr, x0, y0, x1, y1):
     return points
 
 
-c = [8, 6, 3];
-points = get_route(c[0], c[1], c[2], 0, 0, 10, 10)
+c = [6, 8, 3];
+points = get_route(c[0], c[1], c[2], 0, 5, 10, 5)
 x, y = zip(*points)
 print("Points: ", points)
 
