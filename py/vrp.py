@@ -4,7 +4,7 @@ from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
 
 from py.client.models import Map
-from py.config import WEIGHT_CAPACITY, BAGS_COUNT, ENABLE_DEBUG, FIRST_SOLUTION_ALGORITHM
+from py.config import WEIGHT_CAPACITY, BAGS_COUNT, ENABLE_DEBUG, FIRST_SOLUTION_ALGORITHM, LOCAL_SEARCH_ALGORITHM
 
 
 def print_solution(data, manager, routing, solution):
@@ -86,9 +86,9 @@ def vrp(data, map: Map):
     search_parameters = pywrapcp.DefaultRoutingSearchParameters()
     search_parameters.first_solution_strategy = (
         FIRST_SOLUTION_ALGORITHM)
-    search_parameters.time_limit.seconds = 180
+    search_parameters.time_limit.seconds = 15
     search_parameters.local_search_metaheuristic = (
-        routing_enums_pb2.LocalSearchMetaheuristic.GREEDY_DESCENT)
+        LOCAL_SEARCH_ALGORITHM)
 
     # Solve the problem.
     solution = routing.SolveWithParameters(search_parameters)

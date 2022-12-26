@@ -60,6 +60,7 @@ DATA.children.map((item, i) => {
 
 let snow;
 DATA.children.forEach((child, indexChild) => {
+    DATA.snowAreas.push({r: 95, x: 100, y: 100})
     snow = DATA.snowAreas.map((item, indexSnow) => {
         if ((item.x - child.x)*(item.x - child.x) + (item.y - child.y)*(item.y - child.y) <= item.r*item.r) {
             item.childs = item.childs ? item.childs+1 : 1;
@@ -98,6 +99,7 @@ function generateAreaCircle()
 }
 
 function calculatePaths() {
+//    let routes = MOVIES.slice(MOVIES.findIndex(i => i.x === 0 && i.y === 0) + 75, 90)
     let routes = MOVIES
     let items = [];
     let route = [];
@@ -107,9 +109,6 @@ function calculatePaths() {
             items.push(k.y);
           if ((k.x === 0 && k.y === 0) || i === routes.length - 1) {
             const usedGifts = ((routeNum === 0 || routeNum === BAGS.length -1) ? 1 : 0) + (items.length / 2) - 2;
-            if(BAGS[routeNum].total !== usedGifts) {
-                console.error(`Wrong used gifts num at ${routeNum}, used ${usedGifts}`)
-            }
 
             routeNum++;
             route.push(items);
@@ -142,22 +141,54 @@ function calculatePaths() {
             if(p.x === 0 && p.y === 0) {
                 return;
             }
+
+            if(children[`${p.x}-${p.y}`] !== undefined) {
             children[`${p.x}-${p.y}`] = true;
             generateNumber({
                 text: `${number++}`,
                 fill: color,
                 stroke: color,
-                strokeWidth: 1,
+                strokeWidth: 0.1,
                 x: p.x+2,
                 y: p.y+2
             })
+
+            generateNumber({
+                text: `${p.y}`,
+                fill: 'black',
+                stroke: color,
+                strokeWidth: 0.1,
+                x: p.x+ 10,
+                y: p.y+20
+            })
+            generateNumber({
+                text: `${p.x},`,
+                fill: 'black',
+                stroke: color,
+                strokeWidth: 0.1,
+                x: p.x-20,
+                y: p.y+20
+            })
+            } else {
+                generateNumber({
+                x: p.x,
+                y: p.y,
+                width: 10,
+                height: 10,
+                fill: 'red',
+                stroke: 'red',
+                strokeWidth: 1,
+                opacity: 0.5
+            })
+            }
+
         })
 
         var poly = new Konva.Line({
             points: r,
             fill: generateColor(),
             stroke: color,
-            strokeWidth: 1,
+            strokeWidth: 5,
             opacity: 0.5,
             closed: false,
         });
@@ -248,3 +279,7 @@ function generateWedgeNode(item) {
 function generateNumber(item) {
     layer.add( new Konva.Text(item))
 }
+
+
+delete DATA;
+delete d;

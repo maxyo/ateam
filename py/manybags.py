@@ -7,7 +7,6 @@ from py.client.api.map_ import get_map
 from py.client.models import Gift
 from py.config import BAGS_COUNT, WEIGHT_CAPACITY, VOLUME_CAPACITY, MANY_BAGS_FINDING_TIME_LIMIT_MS, \
     ENABLE_DEBUG
-from py.utils import get_weight, get_volume, get_id
 
 
 def many_bags(bags_count = BAGS_COUNT, excluded_gifts: list[int] = []):

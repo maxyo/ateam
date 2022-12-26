@@ -13,12 +13,8 @@ from py.config import HARDFILLED_BAGS, BAGS_COUNT, OUTPUT_PATH, IS_EVIL, PREPARE
 from py.evil import do_evil
 from py.manybags import many_bags
 from py.onebag import one_bag
-from py.utils import get_distance, get_time_matrix, normalize_matrix, optimized_path
+from py.utils import get_distance, get_time_matrix, normalize_matrix, optimized_path, optimize_results
 from py.vrp import vrp
-
-print(optimized_path(Point(0,0), Point(10, 0), SnowArea(2, 5, 1)))
-exit()
-
 
 def main():
 
@@ -49,6 +45,9 @@ def main():
         'distance_matrix': matrix,
         'bags': list(map(lambda i: len(i), bags))
     }, map_data)
+
+    result['paths'] = optimize_results(result['paths'], map_data.snow_areas)
+    result['totalMovements'] = len(result['paths'])
 
     result['bags'] = list(map(lambda i: {'total': len(i), 'items': i}, bags))
 
