@@ -30,21 +30,83 @@ def get_intersect(cx, cy, cr, x0, y0, x1, y1):
         return False
 
 
-# Находит точку за пределами окружности, которая позволяет обойти окружность по кратчайшему пути
-def get_points_outside(points, cx, cy, cr, x0, y0, x1, y1, count=20):
-    h = dist([x0, y0], [x1, y1])
-    print("Dist: ", h, h / 2 / cr)
-    rad = 180 / math.pi;
-    a = math.asin(h / 2 / cr) * rad * 2;
-    da = a / count;
-    points.append([x0, y0])
-    for i in range(count - 1):
-        # [xi, yi] = rotate2D(da * (i + 1), cx, cy, x0, y0)
-        [xi, yi] = rotate2D(da * (i + 1), cx, cy, x0, y0)
-        points.append([xi, yi])
-        print(xi, yi)
+def get_cos(a, b, c):
+    return (a ** 2 + b ** 2 - c ** 2) / (2 * a * b)
 
-    points.append([x1, y1])
+
+def get_distance(x0, y0, x1, y1):
+    return abs(math.sqrt(
+        math.pow(y0 - y1, 2)
+        + math.pow(x0 - x1, 2)
+    ))
+
+
+# Находит точку за пределами окружности, которая позволяет обойти окружность по кратчайшему пути
+def get_points_outside(points, cx, cy, cr, x0, y0, x1, y1):
+    source_to_area_dist = round(get_distance(x0, y0, cx, cy), 2)
+    source_to_target_dist = round(get_distance(x0, y0, x1, y1), 2)
+    area_to_target_dist = round(get_distance(cx, cy, x1, y1), 2)
+
+    area_cos = round(get_cos(area_to_target_dist, source_to_area_dist, source_to_target_dist), 2)
+    area_radians = math.acos(area_cos)
+    distance = (math.pi * cr / 180) * math.degrees(area_radians)
+    count = max(math.ceil(distance / 20), 2)
+    h = dist([x0, y0], [x1, y1])
+    rad = 180 / math.pi
+    a = math.asin(h / 2 / cr) * 2 * rad
+    [xe, ye] = rotate2D(a, cx, cy, x0, y0)
+    [xs, ys] = rotate2D(-a, cx, cy, x0, y0)
+    if round(xs/10, 0)*10 == round(x1/10, 0)*10 and round(ys/10, 0)*10 == round(y1/10, 0)*10:
+        a = -a
+    da = a / (count - 1)
+
+    vec = Point(cx - x0, cy - y0)
+
+    if vec.x > 0:
+        x0 -= 2
+    else:
+        x0 += 2
+
+    if vec.y > 0:
+        y0 -= 2
+    else:
+        y0 += 2
+
+    points.append([int(x0), int(y0)])
+    xi = x0
+    yi = y0
+    for i in range(count - 1):
+        angle = da * (i + 1)
+        [xi, yi] = rotate2D(da, cx, cy, xi, yi)
+
+        vec = Point(cx - xi, cy - yi)
+
+        resx = xi
+        resy = yi
+        if vec.x > 0:
+            resx -= 2
+        else:
+            resx += 2
+
+        if vec.y > 0:
+            resy -= 2
+        else:
+            resy += 2
+
+        points.append([int(resx), int(resy)])
+    vec = Point(cx - x1, cy - y1)
+
+    if vec.x > 0:
+        x1 -= 2
+    else:
+        x1 += 2
+
+    if vec.y > 0:
+        y1 -= 2
+    else:
+        y1 += 2
+
+    points.append([int(x1), int(y1)])
     return points
 
 
@@ -58,24 +120,6 @@ def dist(p1, p2):
 # x0, y0 - coordinates of first point
 # x1, y1 - coordinates of second point
 # return [[x0,y0],[x1,y1],...,[xn,yn]] - array of points, includes start and end points of route
-def get_route(cx,cy,cr, x0, y0, x1, y1):
-    i = get_intersect(cx,cy,cr, x0, y0, x1, y1);
-    points = [[0, 0]]
-    if i:
-        dist0 = dist([0, 0], i[0])
-        dist1 = dist([0, 0], i[1])
-        if (dist0<dist1):
-            points = get_points_outside(points, 5, 5, 3, i[0][0], i[0][1], i[1][0], i[1][1]);
-        else:
-            points = get_points_outside(points, 5, 5, 3, i[1][0], i[1][1], i[0][0], i[0][1]);
-    points.append([10, 10])
-    return points
-
-points = get_route(5, 5, 3, 0, 0, 10, 10);
-x, y = zip(*points)
-print("Points: ", points)
-plt.scatter(x, y)
-plt.savefig('foo.png')
 
 # print(i.geoms[0].coords[0])
 # print(i.geoms[1].coords[0])

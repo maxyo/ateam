@@ -9,8 +9,9 @@ import multithreading
 import shapely
 from matplotlib.pyplot import plot, show, figure
 
+from py.circle_around import get_points_outside
 from py.client.models import Gift, Map, Child, SnowArea
-from py.config import SPEED, SNOWSTORM_SPEED
+from py.config import SPEED, SNOWSTORM_SPEED, ENABLE_DEBUG
 from shapely.geometry import LineString
 from shapely.geometry import Point
 
@@ -58,62 +59,48 @@ def get_sin(cos):
     return math.sqrt(1 - cos**2)
 def optimized_path(source: Point, target: Point, area: SnowArea):
     intersect = get_intersect_points(source, target, area)
-    areaP = Point(area.x, area.y)
-
-    if len(intersect) == 0:
-        return [source, target]
-
     if (len(intersect)) == 2:
-        source_to_area_dist = get_distance(intersect[0], areaP)
-        source_to_target_dist = get_distance(intersect[0], intersect[1])
-        area_to_target_dist = get_distance(areaP, intersect[1])
+        points = []
+        get_points_outside(points, area.x, area.y, area.r, intersect[0].x, intersect[0].y, intersect[1].x, intersect[1].y)
 
-        source_cos = get_cos(source_to_target_dist, source_to_area_dist, area_to_target_dist)
-        target_cos = get_cos(source_to_target_dist, area_to_target_dist, source_to_area_dist)
-        area_cos = get_cos(area_to_target_dist, source_to_area_dist, source_to_target_dist)
+        points = list(map(lambda i: Point(i[0], i[1]), points))
 
-        source_sin = get_sin(source_cos)
-        target_sin = get_sin(target_cos)
-        area_sin = get_sin(area_cos)
 
-        source_radians = math.acos(source_cos)
-        target_radians = math.acos(target_cos)
-        area_radians = math.acos(area_cos)
+        return points
 
-        if source_radians == target_radians:
-            target_radians = -target_radians
+    if(len(intersect) == 1):
+        pass
 
-        left_radians = area_radians
+    return []
 
-        distance = (math.pi*area.r/180)*math.degrees(left_radians)
+def optimized_path_withsloments(source: Point, target: Point, area: SnowArea):
+    intersect = get_intersect_points(source, target, area)
+    if (len(intersect)) == 2:
+        points = []
+        get_points_outside(points, area.x, area.y, area.r, intersect[0].x, intersect[0].y, intersect[1].x, intersect[1].y)
 
-        steps = int(distance+50)
-        new_points = []
-        for i in range(steps + 1):
-            radian = lerp(source_radians, target_radians, i/steps)
-
-            # new_points.append(Point(math.sin(radian)*area.r + area.x, math.cos(radian)*area.r + area.y))
-            new_points.append(Point(math.sin(radian)*area.r, math.cos(radian)*area.r))
-
+        points = list(map(lambda i: Point(i[0], i[1]), points))
 
         path = []
 
-        prev = new_points[0]
-
-        for step in new_points:
-            if step == prev:
+        prev = points[0]
+        last = points[0]
+        for p in points:
+            if p == prev:
                 continue
-            path.append([prev, step, False])
-            prev = step
+            path.append([prev, p, False])
+            prev = p
 
-        d = get_time_for_hard_path(path) * SPEED
-        f = figure(figsize=(2,2))
-        plot(list(map(lambda i: i.x, new_points)), list(map(lambda i: i.y, new_points)))
-        show()
-        return
+        return path
 
+    if(len(intersect) == 1):
+        return [
+            [source, intersect[0], False],
+            [intersect[0], target, True],
+        ]
+        pass
 
-    pass
+    return [[source, target, False]]
 
 
 def get_time_for_hard_path(paths: list):
@@ -148,24 +135,18 @@ def get_time(pointA: Point, pointB: Point, snowAreas: list[SnowArea]):
     if pointB.y == pointA.y and pointB.x == pointA.x:
         return 0
 
+
     snowAreas.sort(key=sort_func_area(pointA))
-    for area in snowAreas:
-        points = get_intersect_points(pointA, pointB, area)
-        if len(points) > 0:
-            path.append([lastPoint, points[0], False])
-            if len(points) == 1:  # target inside area
-                path.append([points[0], pointB, True])
-                lastPoint = pointB
-            else:
-                path.append([points[0], points[1], True])
-                lastPoint = points[1]
-        else:
-            continue
 
-    if lastPoint != pointB:
-        path.append([lastPoint, pointB, False])
+    optimized = optimize_path([pointA, pointB], snowAreas)
+    optimized.insert(0, [pointA, optimized[0][0], False])
+    optimized.append([optimized[-1][1], pointB, False])
 
-    return get_time_for_hard_path(path)
+    optimized_time = get_time_for_hard_path(optimized)
+    direct_time = get_time_for_hard_path([[pointA, pointB, False]])
+
+
+    return min(direct_time, optimized_time)
 
 
 def normalize_matrix(matrix):
@@ -196,9 +177,66 @@ def calc(id, snow_areas, children):
 def task(id, areas, children):
     res = calc(id, areas, children)
     with open('/tmp/%s.json' % id, 'w') as f:
-        print('Done %s' % str(id))
+        ENABLE_DEBUG and print('Done %s' % str(id))
         json.dump(res[1], f)
 
+
+def optimize_results(moves, snowAreas: list[SnowArea]):
+    result = []
+    prev = moves[0]
+    prevpoint = Point(moves[0]['x'], moves[0]['y'])
+    last = moves[0]
+    for move in moves:
+        last = move
+        movepoint = Point(move['x'], move['y'])
+        if move == prev:
+            continue
+
+        snowAreas.sort(key=sort_func_area(prevpoint))
+
+        result.append(prev)
+
+        for area in snowAreas:
+            op = optimized_path(prevpoint, movepoint, area)
+
+            for p in op:
+                result.append({'x': int(p.x), 'y': int(p.y)})
+                prevpoint = p
+
+
+        prevpoint = Point(move['x'], move['y'])
+        prev = move
+
+    result.append(last)
+
+    return result
+
+def optimize_path(moves, snowAreas: list[SnowArea]):
+    result = []
+    prev = moves[0]
+    last = moves[0]
+    for move in moves:
+        last = move
+        movepoint = move
+        if move == prev:
+            continue
+
+        snowAreas.sort(key=sort_func_area(prev))
+
+        result.append([prev, move, False])
+
+        for area in snowAreas:
+            op = optimized_path_withsloments(prev, movepoint, area)
+
+            for p in op:
+                result.append(p)
+                prev = p[1]
+
+        prev = move
+
+    result.append([prev, last, False])
+
+    return result
 
 def get_time_matrix(map: Map):
     children = copy.copy(map.children)
