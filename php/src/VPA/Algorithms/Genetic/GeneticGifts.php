@@ -4,7 +4,7 @@ namespace VPA\Algorithms\Genetic;
 
 class GeneticGifts
 {
-    const NUMBER_OF_BOTS = 10;
+    const NUMBER_OF_BOTS = 4;
     public array $bots;
 
     public function __construct(public Shop $shop)

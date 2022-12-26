@@ -53,6 +53,8 @@ class Shop
         $gifts = array_filter($this->heap, fn($it) => $it['type'] == $type);
         if ($sortByPrice) {
             usort($gifts, fn($a, $b) => $a['price'] < $b['price']);
+        } else {
+            shuffle($gifts);
         }
         return $gifts;
     }
@@ -98,7 +100,7 @@ class Shop
         }
         //var_dump("Heap: ",count($this->heap));
         var_dump("TotalAmount: ",$totalAmount);
-        if ($totalAmount>100000) {
+        while ($totalAmount>100000) {
             $this->createSetByBot($bot, false);
         }
         //die();
