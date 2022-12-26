@@ -87,7 +87,7 @@ def get_route(cx, cy, cr, x0, y0, x1, y1):
 
 
 c = [6, 8, 3];
-points = get_route(c[0], c[1], c[2], 0, 5, 10, 5)
+points = get_route(c[0], c[1], c[2], 0, 5, 10, 8)
 x, y = zip(*points)
 print("Points: ", points)
 
