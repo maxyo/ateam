@@ -2,19 +2,26 @@ import json
 import sys
 from io import StringIO
 
+from shapely import Point
+
 from py.client.api.route import send_route
-from py.client.models import Route, Move
+from py.client.models import Route, Move, SnowArea
 from py.instance import client
 from py.client.api.map_ import get_map
-from py.config import HARDFILLED_BAGS, BAGS_COUNT, OUTPUT_PATH, IS_EVIL, PREPARED_MATRIX, SEND, TOKEN, MAP_ID
+from py.config import HARDFILLED_BAGS, BAGS_COUNT, OUTPUT_PATH, IS_EVIL, PREPARED_MATRIX, SEND, TOKEN, MAP_ID, \
+    MATRIX_SAVE_PATH, FIRST_SOLUTION_ALGORITHM, args
 from py.evil import do_evil
 from py.manybags import many_bags
 from py.onebag import one_bag
-from py.utils import get_distance_matrix, get_distance, get_time_matrix
+from py.utils import get_distance, get_time_matrix, normalize_matrix, optimized_path
 from py.vrp import vrp
+
+print(optimized_path(Point(0,0), Point(10, 0), SnowArea(2, 5, 1)))
+exit()
 
 
 def main():
+
     map_data = get_map.sync(client=client)
     excluded = []
 
@@ -32,12 +39,24 @@ def main():
     else:
         matrix = get_time_matrix(map_data)
 
+    if MATRIX_SAVE_PATH:
+        io = StringIO()
+        json.dump(matrix, io)
+        with open(MATRIX_SAVE_PATH, "w") as f:
+            f.writelines(io.getvalue())
+    matrix = normalize_matrix(matrix)
     result = vrp({
         'distance_matrix': matrix,
         'bags': list(map(lambda i: len(i), bags))
     }, map_data)
 
     result['bags'] = list(map(lambda i: {'total': len(i), 'items': i}, bags))
+
+    result['config'] = {
+        'algo': args.algo,
+        'metaalgo': args.metaalgo,
+        'hbcount': args.hbcount,
+    }
 
     io = StringIO()
     json.dump(result, io)

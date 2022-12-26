@@ -1,2 +1,5 @@
 ortools
 shapely
+multithreading
+loguru
+matplotlib.pyplot
