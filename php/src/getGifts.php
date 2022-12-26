@@ -33,10 +33,13 @@ $shop = new Shop('a8e01288-28f8-45ee-9db4-f74fc4ff02c8.json');
 
 
 $genetic = new GeneticGifts($shop);
+$bot = [4,9,10,1,4,9,4,5,8,2,4,7,0,7,9,3,4,6];
+//$genetic->getFitness($bot);
+//die();
 //var_dump($genetic->bots);
 //die();
 
-for ($i = 0; $i < 50; $i++) {
+for ($i = 0; $i < 5; $i++) {
     printf("%s Batch %d:\n", date("Y-m-d H:i:s"),$i);
     $genetic->runBatch();
 }

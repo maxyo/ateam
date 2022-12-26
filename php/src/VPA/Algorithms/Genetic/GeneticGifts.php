@@ -4,7 +4,7 @@ namespace VPA\Algorithms\Genetic;
 
 class GeneticGifts
 {
-    const NUMBER_OF_BOTS = 4;
+    const NUMBER_OF_BOTS = 6;
     public array $bots;
 
     public function __construct(public Shop $shop)
@@ -50,15 +50,26 @@ class GeneticGifts
             0,
             0,
         ];
-        for ($i = 0; $i < self::NUMBER_OF_BOTS; $i++) {
-            $this->bots[$i] = [];
-            foreach (range(0, 5) as $idx => $gene) {
-                $genes = array_rand($this->types, 3);
-                $this->bots[$i][$idx * 3] = $genes[0];
-                $this->bots[$i][$idx * 3 + 1] = $genes[1];
-                $this->bots[$i][$idx * 3 + 2] = $genes[2];
+//        for ($i = 0; $i < self::NUMBER_OF_BOTS; $i++) {
+//            $this->bots[$i] = [];
+//            foreach (range(0, 5) as $idx => $gene) {
+//                $genes = array_rand($this->types, 3);
+//                $this->bots[$i][$idx * 3] = $genes[0];
+//                $this->bots[$i][$idx * 3 + 1] = $genes[1];
+//                $this->bots[$i][$idx * 3 + 2] = $genes[2];
+//            }
+//        }
+        $bots = glob("bots/*.json");
+        $best = [];
+        foreach ($bots as $botName) {
+            $data = json_decode(file_get_contents($botName), true);
+            if (isset($data['total_happy'])) {
+                $best[$data['total_happy']] = $data['bot'];
             }
         }
+        krsort($best);
+        $best = array_slice($best,0, self::NUMBER_OF_BOTS);
+        $this->bots = $best;
     }
 
     public function runBatch(): array
@@ -82,15 +93,30 @@ class GeneticGifts
         foreach ($best as $idx => $error) {
             $newBots[] = $this->bots[$idx];
         }
-        for ($i = 2; $i < $half; $i++) {
+        for ($i = 1; $i < $half; $i++) {
             $bot = $this->crossing($this->bots[0], $this->bots[$i]);
-            $newBots[] = $this->mutation($bot);
+            $newBots[] = $bot;
             $bot = $this->crossing($this->bots[1], $this->bots[$i]);
-            $newBots[] = $this->mutation($bot);
+            $newBots[] = $bot;
+            //$newBots[] = $this->mutation($bot);
         }
         $newBots = array_splice($newBots, 0, self::NUMBER_OF_BOTS);
         $this->bots = $newBots;
         return $this->bots;
+    }
+
+    public function checkExtstsBot($bot)
+    {
+        $key = implode("_",$bot);
+        echo $key."\n";
+        $file = getcwd()."/bots/".$key.'.json';
+        if (file_exists($file)) {
+            $data = json_decode(file_get_contents($file), true);
+            if ($data['total_happy']) {
+                return $data['total_happy'];
+            }
+        }
+        return false;
     }
 
     public function getBestBot()
@@ -101,6 +127,10 @@ class GeneticGifts
 
     public function getFitness(array $bot): int
     {
+        $error = $this->checkExtstsBot($bot);
+        if ($error) {
+            return $error;
+        }
         $gifts = $this->shop->createSetByBot($bot);
         $data = [
             'mapID' => 'a8e01288-28f8-45ee-9db4-f74fc4ff02c8',

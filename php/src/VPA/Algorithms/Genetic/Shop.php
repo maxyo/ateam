@@ -100,8 +100,8 @@ class Shop
         }
         //var_dump("Heap: ",count($this->heap));
         var_dump("TotalAmount: ",$totalAmount);
-        while ($totalAmount>100000) {
-            $this->createSetByBot($bot, false);
+        if ($totalAmount>100000) {
+            $gifts = $this->createSetByBot($bot, false);
         }
         //die();
         $this->save($bot,$gifts);
