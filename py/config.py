@@ -34,7 +34,7 @@ parser = argparse.ArgumentParser(prog='ateam')
 parser.add_argument('--wcapacity', required=False, type=int, default=200, help='Weight capacity')
 parser.add_argument('--vcapacity', required=False, type=int, default=100, help='Volume capacity')
 parser.add_argument('--bcount', required=False, type=int, default=46, help='Bags count')
-parser.add_argument('--hbcount', required=False, type=int, default=2, help='Bags with many gifts count')
+parser.add_argument('--hbcount', required=False, type=int, default=5, help='Bags with many gifts count')
 parser.add_argument('--speed', required=False, type=int, default=70, help='Speed')
 parser.add_argument('--sspeed', required=False, type=int, default=10, help='Speed at snowstorm')
 parser.add_argument('--output', required=False, default='stdout', help='Output path or stdout')
@@ -44,9 +44,10 @@ parser.add_argument('--token', required=False, type=str, default=None, help='Tok
 parser.add_argument('--send', required=False, type=bool, default=False, help='Send on successful build')
 parser.add_argument('--map', required=False, type=str, default='faf7ef78-41b3-4a36-8423-688a61929c08', help='Map id')
 parser.add_argument('--matrix', required=False, default=None, type=str, help='Prepared matrix, path to json')
-parser.add_argument('--algo', required=False, default='PATH_CHEAPEST_ARC', type=str,
+parser.add_argument('--matrix-write-path', dest='matrix_path', required=False, default=None, type=str, help='Save generated matrix to path')
+parser.add_argument('--algo', required=False, default='PATH_MOST_CONSTRAINED_ARC', type=str,
                     help='First solution algos, available: %s' % ' '.join(list(ALGORITHMS.keys())))
-parser.add_argument('--metaalgo', required=False, default='AUTOMATIC', type=str,
+parser.add_argument('--metaalgo', required=False, default='TABU_SEARCH', type=str,
                     help='local search algos, available: %s' % ' '.join(list(META_ALGOS.keys())))
 
 parser.add_argument('--blimit', required=False, type=int, default=2,
@@ -74,6 +75,7 @@ MAP_ID = args.map
 
 TOKEN = args.token
 PREPARED_MATRIX = args.matrix
+MATRIX_SAVE_PATH = args.matrix_path
 
 MANY_BAGS_FINDING_TIME_LIMIT_MS = args.blimit * 1000
 
