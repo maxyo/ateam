@@ -50,7 +50,7 @@ def many_bags(bags_count = BAGS_COUNT, excluded_gifts: list[int] = [], gifts: li
         solver.Add(
             sum(x[i, b] * volumes[i]
                 for i in items) <= VOLUME_CAPACITY)
-    solver.Add(sum(x[b, i] * costs[i] for i in items for b in bags) <= available_cost)
+    solver.Add(sum(x[i, b] * costs[i] for i in items for b in bags) <= available_cost)
 
     # Objective.
     # Maximize total value of packed items.
