@@ -1,15 +1,13 @@
 from ortools.algorithms import pywrapknapsack_solver
 
+from py.client.models import Gift
 from py.instance import client
 from py.client.api.map_ import get_map
 from py.config import VOLUME_CAPACITY, WEIGHT_CAPACITY, ENABLE_DEBUG
 from py.utils import get_weight, get_id, get_volume
 
 
-def one_bag(excluded_gifts: list[int] = []):
-    map_object = get_map.sync(client=client)
-    raw_gifts = map_object.gifts
-
+def one_bag(excluded_gifts: list[int] = [], raw_gifts: list[Gift] = []):
     gifts = []
 
     for gift in raw_gifts:

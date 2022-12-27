@@ -13,21 +13,26 @@ from py.config import HARDFILLED_BAGS, BAGS_COUNT, OUTPUT_PATH, IS_EVIL, PREPARE
 from py.evil import do_evil
 from py.manybags import many_bags
 from py.onebag import one_bag
-from py.utils import get_distance, get_time_matrix, normalize_matrix, optimized_path, optimize_results
+from py.utils import get_distance, get_time_matrix, normalize_matrix, optimize_results
 from py.vrp import vrp
 
 def main():
+    available_cost = 10000000
+    used_cost = 0
+
 
     map_data = get_map.sync(client=client)
+    map_data.gifts = map_data.gifts[0:len(map_data.children)]
     excluded = []
 
     bags = []
     for i in range(HARDFILLED_BAGS):
-        res = one_bag(excluded)
+        res = one_bag(excluded, map_data.gifts)
         excluded.extend(res)
         bags.append(res)
+        # add used cost calc
 
-    bags.extend(list(many_bags(BAGS_COUNT - HARDFILLED_BAGS, excluded).values()))
+    bags.extend(list(many_bags(BAGS_COUNT - HARDFILLED_BAGS, excluded, map_data.gifts).values()))
 
     if PREPARED_MATRIX:
         with open(PREPARED_MATRIX, 'r') as f:

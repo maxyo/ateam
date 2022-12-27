@@ -1,22 +1,14 @@
-from ortools.algorithms import pywrapknapsack_solver
 from ortools.linear_solver import pywraplp
 
-from py.instance import client
-from py.client import Client, AuthenticatedClient
-from py.client.api.map_ import get_map
 from py.client.models import Gift
 from py.config import BAGS_COUNT, WEIGHT_CAPACITY, VOLUME_CAPACITY, MANY_BAGS_FINDING_TIME_LIMIT_MS, \
     ENABLE_DEBUG
 
 
-def many_bags(bags_count = BAGS_COUNT, excluded_gifts: list[int] = []):
-    data = {}
-
-    map_object = get_map.sync(client=client)
-    gifts = map_object.gifts
-
+def many_bags(bags_count = BAGS_COUNT, excluded_gifts: list[int] = [], gifts: list[Gift] =[], available_cost = 10000):
     weights = {}
     volumes = {}
+    costs = {}
     items = {}
 
     for gift in gifts:
@@ -26,6 +18,7 @@ def many_bags(bags_count = BAGS_COUNT, excluded_gifts: list[int] = []):
             weights[gift.id] = gift.weight
             volumes[gift.id] = gift.volume
             items[gift.id] = gift.id
+            costs[gift.id] = 1
 
     bags = range(bags_count)
 
@@ -57,6 +50,7 @@ def many_bags(bags_count = BAGS_COUNT, excluded_gifts: list[int] = []):
         solver.Add(
             sum(x[i, b] * volumes[i]
                 for i in items) <= VOLUME_CAPACITY)
+    solver.Add(sum(x[b, i] * costs[i] for i in items for b in bags) <= available_cost)
 
     # Objective.
     # Maximize total value of packed items.

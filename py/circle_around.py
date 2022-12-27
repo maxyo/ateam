@@ -107,6 +107,7 @@ def get_points_outside(points, cx, cy, cr, x0, y0, x1, y1):
         y1 += 2
 
     points.append([int(x1), int(y1)])
+
     return points
 
 
