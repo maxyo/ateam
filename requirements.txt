@@ -2,4 +2,7 @@ ortools
 shapely
 multithreading
 loguru
-matplotlib.pyplot
+matplotlib
+requests
+httpx
+attrs
