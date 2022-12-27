@@ -39,7 +39,7 @@ $bot = [4,9,10,1,4,9,4,5,8,2,4,7,0,7,9,3,4,6];
 //var_dump($genetic->bots);
 //die();
 
-for ($i = 0; $i < 50; $i++) {
+for ($i = 0; $i < 500; $i++) {
     printf("%s Batch %d:\n", date("Y-m-d H:i:s"),$i);
     $genetic->runBatch();
 }

@@ -207,7 +207,7 @@ class GeneticGifts
             $p = rand(0, 100);
             $key = array_rand($this->types);
             if ($p < 20) {
-                $bot[$idx] = $this->types[$key];
+                $bot[$idx] = $key;
             }
 //            elseif ($p>40 && $p < 43) {
 //                $bot[$idx] = 1;
